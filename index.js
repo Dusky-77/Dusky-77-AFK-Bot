@@ -390,7 +390,7 @@ function createBot() {
       port: config.server.port,
       version: config.server.version,
       hideErrors: false,
-      checkTimeoutInterval: 120000 // 2 minutes - detects dead connections without false-positive disconnects
+      checkTimeoutInterval: 30000 // 2 minutes - detects dead connections without false-positive disconnects
     });
 
     bot.loadPlugin(pathfinder);
@@ -535,7 +535,7 @@ function initializeModules(bot, mcData, defaultMove) {
       bot.chat(`/register ${password} ${password}`);
       bot.chat(`/login ${password}`);
       console.log('[Auth] Sent login commands');
-    }, 1000);
+    }, 2500);
   }
 
   // ---------- CHAT MESSAGES ----------
