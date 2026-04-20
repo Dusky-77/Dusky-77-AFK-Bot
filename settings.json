@@ -1,14 +1,14 @@
 {
   "name": "AFK Bot",
   "bot-account": {
-    "username": "PerzaanLive",
-    "password": "",
+    "username": "PISQ_AFKBot",
+    "password": "sassypassword77",
     "type": "offline"
   },
   "server": {
     "ip": "example.aternos.me",
     "port": 92591,
-    "version": "1.21.1"
+    "version": "1.21.11"
   },
   "position": {
     "enabled": true,
@@ -19,7 +19,7 @@
   "utils": {
     "auto-auth": {
       "enabled": true,
-      "password": "Perzuu"
+      "password": "sassypassword77"
     },
     "anti-afk": {
       "enabled": true,
@@ -30,9 +30,7 @@
       "repeat": true,
       "repeat-delay": 500,
       "messages": [
-        "I'm a regular player",
-        "Subscribe to Perzaan Gaming!",
-        "I like to play Minecraft!"
+        "Hi, Im PISQ AFK Bot, I keep this server on!"
       ]
     },
     "chat-log": true,
@@ -77,8 +75,8 @@
     "place-night": true
   },
   "discord": {
-    "enabled": true,
-    "webhookUrl": "https://discord.com/api/webhooks/1472567640521183243/7DzSIaCSM_9-5DjzrlAuP9Tdj7Y3yAP6BHg3scKzhaRFdVk8ctWBlhOc7I8l5xC6Nqm3",
+    "enabled": false,
+    "webhookUrl": "https://discord.com/api/webhooks/1495700740507697162/oaB8Conh6A-9A__3rd0P0JnCk8hLhIdmOpOEbuCd40T0Yxr7ECFr5hvKgx3yx3cKU9zT",
     "events": {
       "connect": true,
       "disconnect": true,
