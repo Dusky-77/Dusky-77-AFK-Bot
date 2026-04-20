@@ -2,24 +2,25 @@
   "name": "AFK Bot",
   "bot-account": {
     "username": "PISQ_AFKBot",
-    "password": "sassypassword77",
+    "password": "",
     "type": "offline"
   },
   "server": {
     "ip": "pisq77.aternos.me",
     "port": 12265,
-    "version": false
+    "version": "1.21.1",
+    "try-creative": false
   },
   "position": {
     "enabled": true,
-    "x": -568,
-    "y": 82,
-    "z": -159
+    "x": 0,
+    "y": 100,
+    "z": 0
   },
   "utils": {
     "auto-auth": {
       "enabled": true,
-      "password": "sassypassword77"
+      "password": "chalol78"
     },
     "anti-afk": {
       "enabled": true,
@@ -28,20 +29,17 @@
     "chat-messages": {
       "enabled": true,
       "repeat": true,
-      "repeat-delay": 60, 
+      "repeat-delay": 120,
       "messages": [
-        "Hi, I'm PISQ AFK Bot, I keep this server on!"
+        "I'm a regular player",
+        "none",
+        "I like to play Minecraft!"
       ]
     },
     "chat-log": true,
     "auto-reconnect": true,
     "auto-reconnect-delay": 2000,
-    "max-reconnect-delay": 20000,
-    "periodic-rejoin": {
-      "enabled": true,
-      "min-interval": 20,
-      "max-interval": 60
-    }
+    "max-reconnect-delay": 120000
   },
   "movement": {
     "enabled": true,
@@ -62,7 +60,7 @@
   "modules": {
     "avoidMobs": true,
     "combat": true,
-    "beds": true,
+    "beds": false,
     "chat": true,
     "console-commands": true
   },
@@ -71,12 +69,12 @@
     "auto-eat": true
   },
   "beds": {
-    "pick-up-day": true,
-    "place-night": true
+    "pick-up-day": false,
+    "place-night": false
   },
   "discord": {
     "enabled": false,
-    "webhookUrl": "https://discord.com/api/webhooks/1495700740507697162/oaB8Conh6A-9A__3rd0P0JnCk8hLhIdmOpOEbuCd40T0Yxr7ECFr5hvKgx3yx3cKU9zT",
+    "webhookUrl": "YOUR_DISCORD_WEBHOOK_URL_HERE",
     "events": {
       "connect": true,
       "disconnect": true,
