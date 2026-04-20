@@ -23,7 +23,6 @@ let botState = {
 // Health check endpoint for monitoring
 // Health check endpoint for monitoring
 app.get('/', (req, res) => {
-  // "Blue Teal Shadow" Theme - Live Dashboard
   res.send(`
     <!DOCTYPE html>
     <html>
@@ -32,8 +31,8 @@ app.get('/', (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
           body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: #0f172a; 
+            font-family: 'Inter', 'Segoe UI', sans-serif; 
+            background: #0a0a0c; 
             color: #f8fafc; 
             display: flex; 
             justify-content: center; 
@@ -43,62 +42,72 @@ app.get('/', (req, res) => {
             overflow: hidden;
           }
           .container {
-            background: #1e293b;
+            background: #16161e;
             padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(45, 212, 191, 0.2);
+            border-radius: 24px;
+            /* Gradient Shadow: Purple to Orange */
+            box-shadow: 0 0 60px rgba(168, 85, 247, 0.15), 0 0 30px rgba(249, 115, 22, 0.1);
             text-align: center;
-            width: 400px;
-            border: 1px solid #334155;
-            transition: box-shadow 0.3s ease;
-          }
-          h1 { margin-bottom: 30px; font-size: 24px; color: #ccfbf1; display: flex; align-items: center; justify-content: center; gap: 10px; }
-          .stat-card {
-            background: #0f172a;
-            padding: 15px;
-            margin: 15px 0;
-            border-radius: 12px;
-            border-left: 5px solid #2dd4bf;
-            text-align: left;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+            width: 380px;
+            border: 1px solid #27272a;
             position: relative;
-            overflow: hidden;
           }
-          .label { font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
-          .value { font-size: 18px; font-weight: bold; color: #2dd4bf; text-shadow: 0 0 10px rgba(45, 212, 191, 0.5); margin-top: 5px; }
+          /* Top Gradient Border */
+          .container::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, #a855f7, #ef4444, #f97316, #ccff00);
+            border-radius: 24px 24px 0 0;
+          }
+          h1 { 
+            margin-bottom: 30px; 
+            font-size: 26px; 
+            background: linear-gradient(to right, #a855f7, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; justify-content: center; gap: 12px; 
+          }
+          .stat-card {
+            background: #1c1c26;
+            padding: 16px;
+            margin: 14px 0;
+            border-radius: 14px;
+            border-left: 4px solid #ef4444; /* Default Red Accent */
+            text-align: left;
+            transition: transform 0.2s;
+          }
+          .stat-card:hover { transform: translateX(5px); }
+          .label { font-size: 11px; color: #71717a; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+          .value { font-size: 18px; font-weight: 600; color: #e4e4e7; margin-top: 4px; }
+          
           .status-dot { 
-            height: 12px; width: 12px; 
+            height: 10px; width: 10px; 
             border-radius: 50%; 
             display: inline-block; 
             margin-right: 8px;
-            box-shadow: 0 0 10px currentColor;
-            transition: color 0.3s ease, box-shadow 0.3s ease;
-            background-color: currentColor; /* Use CSS for the dot color */
+            background-color: currentColor;
           }
-          /* Override specific IDs to set background color for the dot */
-          #live-indicator { background-color: currentColor; }
-          
           .pulse { animation: pulse 2s infinite; }
           @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.1); }
-            100% { opacity: 1; transform: scale(1); }
+            0% { opacity: 1; filter: drop-shadow(0 0 2px currentColor); }
+            50% { opacity: 0.4; filter: drop-shadow(0 0 8px currentColor); }
+            100% { opacity: 1; filter: drop-shadow(0 0 2px currentColor); }
           }
           .btn-guide {
-            display: inline-block; margin-top: 20px; padding: 12px 24px; 
-            background: #2dd4bf; color: #0f172a; text-decoration: none; 
-            border-radius: 8px; font-weight: bold; 
-            box-shadow: 0 0 15px rgba(45, 212, 191, 0.4);
-            transition: transform 0.2s;
+            display: block; margin-top: 25px; padding: 14px; 
+            background: linear-gradient(90deg, #ef4444, #f97316);
+            color: #fff; text-decoration: none; 
+            border-radius: 10px; font-weight: bold; 
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
           }
-          .btn-guide:hover { transform: translateY(-2px); }
           .connection-bar {
-            height: 4px; background: #334155; width: 100%; margin-top: 20px; border-radius: 2px; overflow: hidden;
+            height: 3px; background: #27272a; width: 100%; margin-top: 25px; border-radius: 10px; overflow: hidden;
           }
           .connection-fill {
-            height: 100%; width: 100%; background: #2dd4bf;
-            animation: loading 2s infinite linear;
-            transform-origin: 0% 50%;
+            height: 100%; width: 100%; 
+            background: linear-gradient(90deg, #a855f7, #f97316, #ccff00);
+            animation: loading 3s infinite linear;
           }
           @keyframes loading {
             0% { transform: translateX(-100%); }
@@ -113,34 +122,29 @@ app.get('/', (req, res) => {
             ${config.name}
           </h1>
           
-          <div class="stat-card">
-            <div class="label">Status</div>
-            <div class="value" id="status-text">Connecting...</div>
+          <div class="stat-card" style="border-left-color: #a855f7;">
+            <div class="label">System Status</div>
+            <div class="value" id="status-text">Initializing...</div>
           </div>
 
-          <div class="stat-card">
-            <div class="label">Uptime</div>
+          <div class="stat-card" style="border-left-color: #f97316;">
+            <div class="label">Session Uptime</div>
             <div class="value" id="uptime-text">0h 0m 0s</div>
           </div>
 
-          <div class="stat-card">
-            <div class="label">Coordinates</div>
-            <div class="value" id="coords-text">Waiting...</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="label">Server</div>
+          <div class="stat-card" style="border-left-color: #ccff00;">
+            <div class="label">Target Server</div>
             <div class="value">${config.server.ip}</div>
           </div>
 
-          <a href="/tutorial" class="btn-guide">View Setup Guide</a>
+          <a href="/tutorial" class="btn-guide">Setup Documentation</a>
           
           <div class="connection-bar">
-            <div class="connection-fill" id="activity-bar"></div>
+            <div class="connection-fill"></div>
           </div>
           
-          <p style="color: #64748b; font-size: 12px; margin-top: 15px;">
-            Live connection to Bot Process
+          <p style="color: #52525b; font-size: 11px; margin-top: 20px; font-weight: 500;">
+            SECURE BOT INSTANCE • LIVE DATA STREAM
           </p>
         </div>
 
@@ -159,40 +163,27 @@ app.get('/', (req, res) => {
               
               const statusText = document.getElementById('status-text');
               const uptimeText = document.getElementById('uptime-text');
-              const coordsText = document.getElementById('coords-text');
               const liveDot = document.getElementById('live-indicator');
-              const container = document.getElementById('main-container');
 
-              // Update Status
               if (data.status === 'connected') {
-                statusText.innerHTML = '<span class="status-dot" style="color: #4ade80;"></span> Online & Running';
-                statusText.style.color = '#2dd4bf';
-                liveDot.style.color = '#4ade80'; // Green pulse
-                container.style.boxShadow = '0 0 50px rgba(45, 212, 191, 0.2)';
+                statusText.innerHTML = 'ONLINE';
+                statusText.style.color = '#ccff00'; // Neon Yellow when online
+                liveDot.style.color = '#ccff00';
               } else {
-                statusText.innerHTML = '<span class="status-dot" style="color: #f87171;"></span> Reconnecting...';
-                statusText.style.color = '#f87171';
-                liveDot.style.color = '#f87171'; // Red pulse
-                container.style.boxShadow = '0 0 50px rgba(248, 113, 113, 0.2)';
+                statusText.innerHTML = 'RECONNECTING';
+                statusText.style.color = '#ef4444'; // Red when down
+                liveDot.style.color = '#ef4444';
               }
 
-              // Update Uptime
               uptimeText.innerText = formatUptime(data.uptime);
 
-              // Update Coords
-              if (data.coords) {
-                coordsText.innerText = \`Coords: \${Math.floor(data.coords.x)}, \${Math.floor(data.coords.y)}, \${Math.floor(data.coords.z)}\`;
-              } else {
-                coordsText.innerText = 'Unknown Location';
-              }
-
             } catch (e) {
-              document.getElementById('status-text').innerText = 'System Offline';
-              document.getElementById('live-indicator').style.color = '#64748b'; // Grey
+              document.getElementById('status-text').innerText = 'OFFLINE';
+              document.getElementById('status-text').style.color = '#71717a';
+              document.getElementById('live-indicator').style.color = '#27272a';
             }
           };
 
-          // Poll every 1 second
           setInterval(updateStats, 1000);
           updateStats();
         </script>
