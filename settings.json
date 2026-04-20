@@ -8,7 +8,7 @@
   "server": {
     "ip": "pisq77.aternos.me",
     "port": 12265,
-    "version": "1.21.1"
+    "version": false
   },
   "position": {
     "enabled": true,
@@ -28,9 +28,9 @@
     "chat-messages": {
       "enabled": true,
       "repeat": true,
-      "repeat-delay": 500,
+      "repeat-delay": 60, 
       "messages": [
-        "Hi, Im PISQ AFK Bot, I keep this server on!"
+        "Hi, I'm PISQ AFK Bot, I keep this server on!"
       ]
     },
     "chat-log": true,
