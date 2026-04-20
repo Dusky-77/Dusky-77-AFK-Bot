@@ -31,8 +31,8 @@ app.get('/', (req, res) => {
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <style>
           body { 
-            font-family: 'Inter', 'Segoe UI', sans-serif; 
-            background: #0a0a0c; 
+            font-family: 'Inter', sans-serif; 
+            background: #050507; 
             color: #f8fafc; 
             display: flex; 
             justify-content: center; 
@@ -40,73 +40,75 @@ app.get('/', (req, res) => {
             height: 100vh; 
             margin: 0; 
             overflow: hidden;
+            cursor: crosshair;
+          }
+          /* Mouse Trail Canvas */
+          #trail-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
+            z-index: 9999;
           }
           .container {
-            background: #16161e;
+            background: #0f0f13;
             padding: 40px;
-            border-radius: 24px;
-            /* Gradient Shadow: Purple to Orange */
-            box-shadow: 0 0 60px rgba(168, 85, 247, 0.15), 0 0 30px rgba(249, 115, 22, 0.1);
+            border-radius: 28px;
+            box-shadow: 0 0 80px rgba(168, 85, 247, 0.1);
             text-align: center;
             width: 380px;
-            border: 1px solid #27272a;
+            border: 1px solid #1f1f23;
             position: relative;
+            z-index: 10;
           }
-          /* Top Gradient Border */
           .container::before {
             content: "";
             position: absolute;
             top: 0; left: 0; right: 0; height: 4px;
             background: linear-gradient(90deg, #a855f7, #ef4444, #f97316, #ccff00);
-            border-radius: 24px 24px 0 0;
+            border-radius: 28px 28px 0 0;
           }
           h1 { 
             margin-bottom: 30px; 
-            font-size: 26px; 
-            background: linear-gradient(to right, #a855f7, #f97316);
+            font-size: 24px; 
+            background: linear-gradient(to right, #ef4444, #f97316);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            display: flex; align-items: center; justify-content: center; gap: 12px; 
+            font-weight: 800;
           }
           .stat-card {
-            background: #1c1c26;
+            background: #16161e;
             padding: 16px;
-            margin: 14px 0;
-            border-radius: 14px;
-            border-left: 4px solid #ef4444; /* Default Red Accent */
+            margin: 12px 0;
+            border-radius: 16px;
+            border-left: 4px solid #ef4444;
             text-align: left;
-            transition: transform 0.2s;
+            transition: all 0.3s ease;
           }
-          .stat-card:hover { transform: translateX(5px); }
-          .label { font-size: 11px; color: #71717a; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
-          .value { font-size: 18px; font-weight: 600; color: #e4e4e7; margin-top: 4px; }
+          .stat-card:hover { transform: scale(1.02); background: #1c1c26; }
+          .label { font-size: 10px; color: #52525b; text-transform: uppercase; letter-spacing: 2px; font-weight: 700; }
+          .value { font-size: 17px; font-weight: 600; color: #e4e4e7; margin-top: 4px; }
           
-          .status-dot { 
-            height: 10px; width: 10px; 
-            border-radius: 50%; 
-            display: inline-block; 
-            margin-right: 8px;
-            background-color: currentColor;
+          #player-list {
+            font-size: 13px;
+            color: #ccff00;
+            margin-top: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
           }
-          .pulse { animation: pulse 2s infinite; }
-          @keyframes pulse {
-            0% { opacity: 1; filter: drop-shadow(0 0 2px currentColor); }
-            50% { opacity: 0.4; filter: drop-shadow(0 0 8px currentColor); }
-            100% { opacity: 1; filter: drop-shadow(0 0 2px currentColor); }
+          .player-tag {
+            background: rgba(204, 255, 0, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(204, 255, 0, 0.2);
           }
-          .btn-guide {
-            display: block; margin-top: 25px; padding: 14px; 
-            background: linear-gradient(90deg, #ef4444, #f97316);
-            color: #fff; text-decoration: none; 
-            border-radius: 10px; font-weight: bold; 
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-          }
+
           .connection-bar {
-            height: 3px; background: #27272a; width: 100%; margin-top: 25px; border-radius: 10px; overflow: hidden;
+            height: 2px; background: #1f1f23; width: 100%; margin-top: 30px; border-radius: 10px; overflow: hidden;
           }
           .connection-fill {
             height: 100%; width: 100%; 
-            background: linear-gradient(90deg, #a855f7, #f97316, #ccff00);
+            background: linear-gradient(90deg, #a855f7, #ef4444, #f97316, #ccff00);
             animation: loading 3s infinite linear;
           }
           @keyframes loading {
@@ -116,76 +118,99 @@ app.get('/', (req, res) => {
         </style>
       </head>
       <body>
-        <div class="container" id="main-container">
-          <h1>
-            <span id="live-indicator" class="status-dot pulse" style="color: #ef4444;"></span> 
-            ${config.name}
-          </h1>
+        <canvas id="trail-canvas"></canvas>
+
+        <div class="container">
+          <h1>${config.name.toUpperCase()}</h1>
           
           <div class="stat-card" style="border-left-color: #a855f7;">
-            <div class="label">System Status</div>
-            <div class="value" id="status-text">Initializing...</div>
+            <div class="label">Status</div>
+            <div class="value" id="status-text">INITIALIZING...</div>
           </div>
 
           <div class="stat-card" style="border-left-color: #f97316;">
-            <div class="label">Session Uptime</div>
+            <div class="label">Uptime</div>
             <div class="value" id="uptime-text">0h 0m 0s</div>
           </div>
 
           <div class="stat-card" style="border-left-color: #ccff00;">
-            <div class="label">Target Server</div>
-            <div class="value">${config.server.ip}</div>
+            <div class="label">Online Players</div>
+            <div id="player-list">Waiting for data...</div>
           </div>
-
-          <a href="/tutorial" class="btn-guide">Setup Documentation</a>
           
           <div class="connection-bar">
             <div class="connection-fill"></div>
           </div>
-          
-          <p style="color: #52525b; font-size: 11px; margin-top: 20px; font-weight: 500;">
-            SECURE BOT INSTANCE • LIVE DATA STREAM
-          </p>
         </div>
 
         <script>
-          const formatUptime = (seconds) => {
-            const h = Math.floor(seconds / 3600);
-            const m = Math.floor((seconds % 3600) / 60);
-            const s = seconds % 60;
-            return \`\${h}h \${m}m \${s}s\`;
-          };
-
+          // --- STATS UPDATE LOGIC ---
           const updateStats = async () => {
             try {
               const res = await fetch('/health');
               const data = await res.json();
               
-              const statusText = document.getElementById('status-text');
-              const uptimeText = document.getElementById('uptime-text');
-              const liveDot = document.getElementById('live-indicator');
+              document.getElementById('status-text').innerText = data.status.toUpperCase();
+              document.getElementById('status-text').style.color = data.status === 'connected' ? '#ccff00' : '#ef4444';
+              
+              const h = Math.floor(data.uptime / 3600);
+              const m = Math.floor((data.uptime % 3600) / 60);
+              const s = data.uptime % 60;
+              document.getElementById('uptime-text').innerText = \`\${h}h \${m}m \${s}s\`;
 
-              if (data.status === 'connected') {
-                statusText.innerHTML = 'ONLINE';
-                statusText.style.color = '#ccff00'; // Neon Yellow when online
-                liveDot.style.color = '#ccff00';
+              const playerList = document.getElementById('player-list');
+              if (data.players && data.players.length > 0) {
+                playerList.innerHTML = data.players.map(p => \`<span class="player-tag">\${p}</span>\`).join('');
               } else {
-                statusText.innerHTML = 'RECONNECTING';
-                statusText.style.color = '#ef4444'; // Red when down
-                liveDot.style.color = '#ef4444';
+                playerList.innerHTML = '<span style="color: #52525b">No players online</span>';
               }
-
-              uptimeText.innerText = formatUptime(data.uptime);
-
-            } catch (e) {
-              document.getElementById('status-text').innerText = 'OFFLINE';
-              document.getElementById('status-text').style.color = '#71717a';
-              document.getElementById('live-indicator').style.color = '#27272a';
-            }
+            } catch (e) { console.error(e); }
           };
+          setInterval(updateStats, 2000);
 
-          setInterval(updateStats, 1000);
-          updateStats();
+          // --- NEON MOUSE TRAIL LOGIC ---
+          const canvas = document.getElementById('trail-canvas');
+          const ctx = canvas.getContext('2d');
+          let points = [];
+          const colors = ['#a855f7', '#ef4444', '#f97316', '#ccff00'];
+
+          function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+          }
+          window.addEventListener('resize', resize);
+          resize();
+
+          window.addEventListener('mousemove', (e) => {
+            for(let i=0; i<3; i++) { // Adds 3 particles per move for "thickness"
+              points.push({
+                x: e.clientX,
+                y: e.clientY,
+                age: 0,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2
+              });
+            }
+          });
+
+          function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < points.length; i++) {
+              let p = points[i];
+              p.age++;
+              p.x += p.vx;
+              p.y += p.vy;
+              ctx.globalAlpha = 1 - (p.age / 40);
+              ctx.fillStyle = p.color;
+              ctx.beginPath();
+              ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+              ctx.fill();
+              if (p.age > 40) { points.splice(i, 1); i--; }
+            }
+            requestAnimationFrame(animate);
+          }
+          animate();
         </script>
       </body>
     </html>
@@ -251,7 +276,7 @@ app.get('/health', (req, res) => {
   res.json({
     status: botState.connected ? 'connected' : 'disconnected',
     uptime: Math.floor((Date.now() - botState.startTime) / 1000),
-    coords: (bot && bot.entity) ? bot.entity.position : null,
+    players: bot && bot.players ? Object.keys(bot.players) : [],
     lastActivity: botState.lastActivity,
     reconnectAttempts: botState.reconnectAttempts,
     memoryUsage: process.memoryUsage().heapUsed / 1024 / 1024
